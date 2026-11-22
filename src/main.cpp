@@ -7,7 +7,7 @@ auto main() -> int {
 
   game::Window window{800u, 600u};
 
-  for (;;) {
+  while (window.running()) {
   }
 
   return 0;

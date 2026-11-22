@@ -1,8 +1,28 @@
 #include "window.h"
 #include <cstdint>
+#include <print>
 #include <stdexcept>
 
 #include <Windows.h>
+
+namespace {
+
+auto g_running = true;
+
+auto CALLBACK window_proc(HWND hWnd, UINT Msg, WPARAM wParam,
+                          LPARAM lParam) -> LRESULT {
+  switch (Msg) {
+  case WM_CLOSE:
+    g_running = false;
+    break;
+  case WM_KEYDOWN:
+    std::println("key down");
+    break;
+  }
+
+  return ::DefWindowProc(hWnd, Msg, wParam, lParam);
+}
+} // namespace
 
 namespace game {
 Window::Window(std::uint32_t width, std::uint32_t heihgt)
@@ -10,7 +30,7 @@ Window::Window(std::uint32_t width, std::uint32_t heihgt)
 
   wc_ = {
       .style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC,
-      .lpfnWndProc = ::DefWindowProcA,
+      .lpfnWndProc = window_proc,
       .hInstance = ::GetModuleHandleA(nullptr),
       .lpszClassName = "window class",
   };
@@ -36,6 +56,16 @@ Window::Window(std::uint32_t width, std::uint32_t heihgt)
 
   ::ShowWindow(window_, SW_SHOW);
   ::UpdateWindow(window_);
+}
+
+auto Window::running() const -> bool {
+  auto message = ::MSG{};
+
+  while (::PeekMessageA(&message, nullptr, 0, 0, PM_REMOVE) != 0) {
+    ::TranslateMessage(&message);
+    ::DispatchMessageA(&message);
+  }
+  return g_running;
 }
 
 } // namespace game

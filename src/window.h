@@ -18,9 +18,11 @@ public:
   Window(Window &&) = default;
   auto operator=(Window &&) -> Window & = default;
 
+  auto running() const -> bool;
+
 private:
   AutoRelease<::HWND, nullptr> window_;
-  WNDCLASSA wc_;
+  ::WNDCLASSA wc_;
 };
 
 } // namespace game
