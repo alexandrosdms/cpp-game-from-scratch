@@ -3,6 +3,7 @@
 #include <concepts>
 #include <functional>
 #include <ranges>
+#include <utility>
 
 namespace game {
 
@@ -15,7 +16,7 @@ public:
 
   ~AutoRelease() {
     if ((obj_ != Invalid) && deleter_) {
-      deleter_;
+      deleter_(obj_);
     }
   }
 
