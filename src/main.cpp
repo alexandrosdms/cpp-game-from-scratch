@@ -1,3 +1,4 @@
+#include "auto_release.h"
 #include <print>
 
 auto main() -> int {
