@@ -28,7 +28,7 @@ public:
     AutoRelease newObj{std::move(other)};
     swap(newObj);
 
-    return this;
+    return *this;
   }
 
   auto swap(AutoRelease &other) noexcept -> void {
